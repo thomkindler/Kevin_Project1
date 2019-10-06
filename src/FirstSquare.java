@@ -1,26 +1,13 @@
 public interface FirstSquare extends Square{
-    @Override
-    default void leave(Player player) {
 
-    }
+    void leave(Player player);
 
-    @Override
-    default Square moveAndLand(int numbSquares) {
-        return null;
-    }
+    Square moveAndLand(int numbSquares);
 
-    @Override
-    default void enter(Player player) {
+    void enter(Player player);
 
-    }
+    boolean isLastSquare();
 
-    @Override
-    default boolean isLastSquare() {
-        return false;
-    }
+    Square landHereOrGoHome();
 
-    @Override
-    default Square landHereOrGoHome() {
-        return null;
-    }
 }

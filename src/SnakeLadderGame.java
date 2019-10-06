@@ -2,10 +2,10 @@ import java.util.Scanner;
 
 public class SnakeLadderGame {
 
-    static GameBoard gameBoard;
-    static Die die;
+    static private GameBoard gameBoard;
+    static private Die die;
 
-    static int numbPlayers=0;
+    private static int numbPlayers=0;
 
 
     public static void main(String[] args) {
@@ -28,22 +28,22 @@ public class SnakeLadderGame {
             names[i] = in.next();
         }
 
-        gameBoard = new GameBoardImpl().createGameBoard(4, 6, numbPlayers, names);
+        gameBoard = new GameBoardImpl().createGameBoard(3, 4, numbPlayers, names);
         die = new DieImpl();
 
         String output="";
-        output = String.format("Initial State: ");
+        output=gameBoard.displayGameBoard(0);
         System.out.println(output);
         int numbSquares;
         while (!gameBoard.movePlayer(numbSquares=die.throw_dice())) {
-            output = String.format("%s rolls %d:", "yy",numbSquares);
+            output=gameBoard.displayGameBoard(1);
             System.out.println(output);
         }
 
-        output = String.format("Final State: ");
+        output=gameBoard.displayGameBoard(2);
         System.out.println(output);
 
-        output = String.format("%s wins!","xxx");
+        output = gameBoard.displayGameBoard(3);
         System.out.println(output);
 
         System.out.println("Good bye, hope to see you soon again!");

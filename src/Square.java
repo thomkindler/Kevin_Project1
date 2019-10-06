@@ -17,4 +17,7 @@ public interface Square {
 
     //checks if Square is occupied already than it returns first square otherwise it returns current Square
     Square landHereOrGoHome();
+
+    //returns status of square (nothing, Player, Ladder or Snake)
+    String statusSquare();
 }

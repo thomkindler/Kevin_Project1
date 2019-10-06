@@ -10,5 +10,6 @@ public interface Player {
     //returns the current Square the Player sits on
     Square square();
 
-
+    //returns the name of the Player
+    String getName();
 }

@@ -11,7 +11,7 @@ public interface GameBoard {
 
     // print all squares of the GameBoard and list players should they be on a square
     // Also list ladder start fields and end fields as well as Snake start fields and end fields
-    void displayGameBoard();
+    String displayGameBoard(int stage);
 
     //get random number of Squares to move in next move
     int getNumbSquaresToMove();
@@ -20,5 +20,5 @@ public interface GameBoard {
     boolean movePlayer(int numSquares);
 
     //finds Square numbSquare ahead, taking in to account ladder and snakes
-    Square findSquare(int NumbSquares);
+    Square findSquare(int ID, int NumbSquares);
 }

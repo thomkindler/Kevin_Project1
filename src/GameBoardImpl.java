@@ -1,15 +1,16 @@
-import java.util.LinkedList;
-import java.util.Queue;
+
 
 public class GameBoardImpl implements GameBoard {
-    private Square[] mySquares;
-
     private int squareCount;
-    private Queue<Player> players=null;
+    private Square[] mySquares;
+    private Players myPlayers;
+    private Player currentPlayer;
+    private int numSquares;
+    private Square lastSquare;
 
     GameBoardImpl() {
         this.squareCount=0;
-        this.players = new LinkedList<>();
+        this.myPlayers=new PlayersImpl();
     }
 
 
@@ -23,13 +24,29 @@ public class GameBoardImpl implements GameBoard {
 
         //initializes the board as an array of fields of size "fieldcount"
         this.mySquares = new Square[squareCount];
+        mySquares[0]=new FirstSquareImpl(1, this);
+        Square square;
+        for (int i=1; i<(squareCount-1); i++) {
+            square = new SquareImpl(i+1, this);
+            mySquares[i]=square;
+        }
+        mySquares[(squareCount-1)]=new LastSquareImpl(squareCount, this);
+        this.lastSquare=mySquares[(squareCount-1)];
+        mySquares[1]=new LadderImpl(2,6, this);
+        mySquares[6]=new LadderImpl(7,9, this);
+        mySquares[10]=new SnakeImpl(11,5, this);
+
 
         //initialises a queue of players and add numb_players to stack
-        Player player = null;
-        for (int i=0; i<numb_players; i++)
-            player = new PlayerImpl();
-            this.players.add(player);
+        Player player;
+        for (int i=0; i<numb_players; i++) {
+            player = new PlayerImpl(playerNames[i], this.mySquares[0]);
+            this.myPlayers.add(player);
 
+            //add Player to first Square
+            this.mySquares[0].enter(player);
+
+        }
         return this;
     }
 
@@ -41,8 +58,33 @@ public class GameBoardImpl implements GameBoard {
 
     // print all fields of the GameBoard and list players should they be on a field
     // Also list ladder start fields and end fields as well as Snake start fields and end fields
-    public void displayGameBoard() {
-
+    @Override
+    public String displayGameBoard(int stage) {
+        String out="";
+        switch(stage) {
+            case 0:
+                out = "Initial State: ";
+                for (int i = 0; i < this.squareCount; i++) {
+                    out = out.concat(this.mySquares[i].statusSquare());
+                }
+                break;
+            case 1:
+                out = String.format("%s rolls %d:", this.currentPlayer.getName(), this.numSquares);
+                for (int i = 0; i < this.squareCount; i++) {
+                    out = out.concat(this.mySquares[i].statusSquare());
+                }
+            break;
+            case 2:
+                out = "Final State: ";
+                for (int i = 0; i < this.squareCount; i++) {
+                    out = out.concat(this.mySquares[i].statusSquare());
+                }
+            break;
+            case 3:
+                out = String.format("%s wins!",this.currentPlayer.getName());
+            break;
+        }
+        return(out);
     }
 
     @Override
@@ -52,13 +94,31 @@ public class GameBoardImpl implements GameBoard {
 
     @Override
     public boolean movePlayer(int numSquares) {
-        return false;
+
+
+        this.numSquares=numSquares;
+        this.currentPlayer=this.myPlayers.remove();
+        this.currentPlayer.moveFwd(this.numSquares);
+        this.myPlayers.add(this.currentPlayer);
+        Square curentSquare=this.currentPlayer.square();
+        return curentSquare.isLastSquare();
     }
 
 
     @Override
-    public Square findSquare(int NumbSquares) {
-        return null;
+    public Square findSquare(int ID, int NumbSquares) {
+        int newID=ID+NumbSquares-1;
+        if (newID>=this.squareCount) newID=this.squareCount-1;
+        Square newSquare= this.mySquares[newID];
+        if (newSquare instanceof Ladder) {
+            newSquare= this.mySquares[((Ladder) newSquare).getJumpDestID()-1];
+        }
+        else {
+            if (newSquare instanceof Snake) {
+                newSquare= this.mySquares[((Snake) newSquare).getJumpDestID()-1];
+            }
+        }
+        return newSquare;
     }
 
 }
